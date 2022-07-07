@@ -1,16 +1,19 @@
 require 'socket'
 
-server = TCPSocket.new 5050
+server = TCPServer.open(5000)
 
-loop do
-  client = server.accept
-
-  loop do
-    mensajecliente = client.gets
-    puts mensajecliente
-    sms = gets
-    client.puts sms
-  end
-  
-  client.close
-end
+loop {
+    Thread.start(server.accept) do |client|
+        
+        client_msg = client.gets
+        puts client_msg
+        
+        counter = 0
+        while counter < 10           
+            send = gets.chomp
+            client.puts send
+            client_msg = client.gets  
+            puts client_msg  
+        end
+    end
+}
